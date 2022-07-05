@@ -44,7 +44,7 @@ def getRatio(price_a, price_b):
 	""" Also create some unit tests for this function in client_test.py """
 	if (price_b == 0):
 		# When price_b is 0, avoid throwing ZeroDivisionError. This condition has been added in case the rare chance might happen.
-		return
+		return "Input should not be a zero. Please double check!"
 	return price_a / price_b
 
 # Main
@@ -55,6 +55,7 @@ if __name__ == "__main__":
 		quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
 
 		""" ----------- Update to get the ratio --------------- """
+		# prices dictionary was created to store the stock prices:
 		prices = {}
 		for quote in quotes:
 			stock, bid_price, ask_price, price = getDataPoint(quote)
