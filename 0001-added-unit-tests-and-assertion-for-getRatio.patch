@@ -1,0 +1,112 @@
+From 0cbc29aceadc7b13ee4c4e0f87026fee60895312 Mon Sep 17 00:00:00 2001
+From: Joanne <jl7105@nyu.edu>
+Date: Tue, 5 Jul 2022 19:07:02 -0400
+Subject: [PATCH] added unit tests and assertion for getRatio
+
+---
+ __pycache__/client3.cpython-38.pyc | Bin 0 -> 1157 bytes
+ client3.py                         |   3 ++-
+ client_test.py                     |  23 ++++++++++++++++++++++-
+ 3 files changed, 24 insertions(+), 2 deletions(-)
+ create mode 100644 __pycache__/client3.cpython-38.pyc
+
+diff --git a/__pycache__/client3.cpython-38.pyc b/__pycache__/client3.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..7c932f4021bce6c7963364d8b987f703a742f6cd
+GIT binary patch
+literal 1157
+zcmYjROK%%D5GHrItCcOej^js#T$lnuE1<Sq<PsQZ9<|dK&_GF$Lx>iO)pBI5y;{m7
+zRWyoxa({???B8gM{s<m==_&V~dg?4?8zC`I&JJfj4)%4sy+UyP{l}k!32Oh;#)qqk
+z#uFs-7cxmCEs3CB1|sk>6rq<)Fd2wQh9Z_sM!yo#kg;r_OrR-~(?I_YD-d7MBl6QP
+zVim$g3+PFEu?ErNBVY@5NiOLnU98tq+$xCJfLj>5FK$BvZeP$Jnb;ItVq5IM4s5{Y
+zLjoVmCTzkMY{SlwZIcU1$(cp(3M8;0S33lGt3xh=tFvz<eMP$M_t*=0KD#@zc5=|`
+zl`7B5kuvt+!Ty8&-q{rN+sB3c^4)pyFC`>Lx>*rw4CxTbJV7=`OgiM8+FA=bM22`D
+zJrBIiZtQR#%)=cbqdVlB&1r4T*^ps1@$7*2wUW~ucvhBN4Y?fwuK*-S{&QAN!Emei
+zF;t*4i$PpwHk+uTvfM?+s{GV7teT{QLb_<8iyW4AW=`J+SYnsDXjrPub|V*^O_c>*
+zyIm7MNSE<Vj9sd_?(R3DS5f@e>y6YH5TLB8-~^!eegB8UT?_eW*WwquU+nhZ-0$UO
+z0hPVKH+kz?$6$}Jy1uUtQy4#9VM5n&x2SHTFRyREUbSA62XqsaIh7QLr6q$`2<e>O
+zAqY}9`-Fc3mLmX#sv+`ary0*Gd8H4yt{-Z)|6MhiT5d*aT1s9i%Lg@PGtg>}_e;nO
+zaH*z)5_mp>{PeDGwHt`WRnBW=;18Cpg_&J~&AqG(=%Qs}WP~LFqk7Gsrs+5<sx+N_
+z`l7~I@_UA7mVbsQAKWvaa|Fywe+_EgS>m%{oC}|Rb?CyQXJ2<aVr{C+vKZ`Xz)3V#
+z#7o;TTZ}=l6Qe2-YiwMNMfBqJvzKoieeQw1DWuBAkftuesAF&xHGD#8MB_SV19Peg
+zR4yJWJ<hCS8Zzl(KOM%!zDA=HY|PJ!uKxqNeoH?ee#|QS0YLS*=p{-I$2iO-JlaB+
+a;m8u|cgR8(B+X<c30ssihTe6g?cjfu$0kJp
+
+literal 0
+HcmV?d00001
+
+diff --git a/client3.py b/client3.py
+index 67ce914..82d2925 100644
+--- a/client3.py
++++ b/client3.py
+@@ -44,7 +44,7 @@ def getRatio(price_a, price_b):
+ 	""" Also create some unit tests for this function in client_test.py """
+ 	if (price_b == 0):
+ 		# When price_b is 0, avoid throwing ZeroDivisionError. This condition has been added in case the rare chance might happen.
+-		return
++		return "Input should not be a zero. Please double check!"
+ 	return price_a / price_b
+ 
+ # Main
+@@ -55,6 +55,7 @@ if __name__ == "__main__":
+ 		quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
+ 
+ 		""" ----------- Update to get the ratio --------------- """
++		# prices dictionary was created to store the stock prices:
+ 		prices = {}
+ 		for quote in quotes:
+ 			stock, bid_price, ask_price, price = getDataPoint(quote)
+diff --git a/client_test.py b/client_test.py
+index af2bf26..e95c6d1 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -1,5 +1,5 @@
+ import unittest
+-from client3 import getDataPoint
++from client3 import getDataPoint, getRatio
+ 
+ class ClientTest(unittest.TestCase):
+   def test_getDataPoint_calculatePrice(self):
+@@ -8,6 +8,10 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      # assertEqual(first, second, msg=None)
++      # Test that first and second are equal. If the values do not compare equal, the test will fail.
++      self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price']) / 2))
+ 
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+@@ -15,11 +19,28 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price']) / 2))
+ 
+ 
+   """ ------------ Add more unit tests ------------ """
++  def test_getRatio(self):
++    prices = {
++      'ABC': 128.84,
++      'DEF': 125.67
++    }
+ 
++    """ ------------ Add the assertion below ------------ """
++    self.assertEqual(getRatio(prices['ABC'], prices['DEF']), prices['ABC'] / prices['DEF'])
++
++  def test_getRatio_isZero(self):
++    prices = {
++      'ABC': 128.84,
++      'DEF': 0
++    }
+ 
++    """ ------------ Add the assertion below ------------ """
++    self.assertEqual(getRatio(prices['ABC'], prices['DEF']), "Input should not be a zero. Please double check!")
+ 
+ if __name__ == '__main__':
+     unittest.main()
+-- 
+2.25.1
+
