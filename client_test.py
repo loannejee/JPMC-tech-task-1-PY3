@@ -42,5 +42,33 @@ class ClientTest(unittest.TestCase):
     """ ------------ Add the assertion below ------------ """
     self.assertEqual(getRatio(prices['ABC'], prices['DEF']), "Input should not be a zero. Please double check!")
 
+  # JPMC Solution:
+  def test_getRatio_priceBZero(self):
+    price_a = 119.2
+    price_b = 0
+    self.assertIsNone(getRatio(price_a, price_b))
+ 
+  def test_getRatio_priceAZero(self):
+    price_a = 0
+    price_b = 121.68
+    self.assertEqual(getRatio(price_a, price_b), 0)
+ 
+  def test_getRatio_greaterThan1(self):
+    price_a = 346.48
+    price_b = 166.39
+    self.assertGreater(getRatio(price_a, price_b), 1)
+
+  def test_getRatio_LessThan1(self):
+    price_a = 166.39
+    price_b = 356.48
+    self.assertLess(getRatio(price_a, price_b), 1)
+
+  def test_getRatio_exactlyOne(self):
+    price_a = 356.48
+    price_b = 356.48
+    self.assertEqual(getRatio(price_a, price_b), 1)
+
+
+
 if __name__ == '__main__':
     unittest.main()
